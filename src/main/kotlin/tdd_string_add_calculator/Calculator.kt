@@ -3,22 +3,22 @@ package tdd_string_add_calculator
 object Calculator {
     fun calculate(originalExpress: String?): String {
         val express = originalExpress ?: DEFAULT_VALUE
-        val customDelimiter = checkCustomDelimiter(express)
-        val newRegex = getRegexWithCustomDelimiter(customDelimiter)
+        val customDelimiter = getCustomDelimiterFromExpress(express)
+        val regexWithCustomDelimiter = getRegexWithCustomDelimiter(customDelimiter)
         val customDelimiterString = getCustomDelimiterString(
             express = express,
             customDelimiter = customDelimiter
         )
-        val newExpress = getNewExpress(
+        val finalExpressWithCustomDelimiter = getNewExpress(
             express = express,
             customDelimiter = customDelimiter,
             customDelimiterString = customDelimiterString
         )
-        val list = newExpress.split(newRegex)
+        val list = finalExpressWithCustomDelimiter.split(regexWithCustomDelimiter)
         return calculate(list)
     }
 
-    private fun checkCustomDelimiter(express: String): String =
+    private fun getCustomDelimiterFromExpress(express: String): String =
         if (express.startsWith(CUSTOM_DELIMITER_START_WITH)) {
             express.getOrNull(CUSTOM_DELIMITER_INDEX).toString()
         } else {
@@ -50,7 +50,7 @@ object Calculator {
                 validateNumberIsNegativeNumber(number)
             }.reduce { acc, i -> acc + i }
                 .toString()
-        }.getOrElse { throw RuntimeException() }
+        }.getOrElse { error(NOT_SUPPORTED_TEXT) }
     }
 
     private fun changeLettersToNumber(it: String): Int = it.ifBlank { DEFAULT_VALUE }.toInt()
@@ -66,4 +66,5 @@ object Calculator {
     private const val LAST_SUBSTRING_RANGE = 3
     private const val SPLIT_REGEX = ",:"
     private const val DEFAULT_VALUE = "0"
+    private const val NOT_SUPPORTED_TEXT = "적절하지 않은 문자가 들어왔습니다."
 }
